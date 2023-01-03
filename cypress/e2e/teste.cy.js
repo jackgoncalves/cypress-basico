@@ -184,8 +184,6 @@ describe('Central de atendimento ao Cliente', function () {
 
       cy.contains('Talking About Testing').should('be.visible')
   })
-
   
-
-
 })
+
