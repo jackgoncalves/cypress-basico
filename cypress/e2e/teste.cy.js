@@ -18,7 +18,7 @@ describe('Central de atendimento ao Cliente', function () {
     cy.get('#open-text-area').type(longText, { delay: 0 }) // passa um objeto com valor 0 
 
     cy.get('button[type="submit"]').click()
-    cy.get('.success').should('be.visible') 
+    cy.get('.success').should('be.visible')
 
   })
 
@@ -120,10 +120,10 @@ describe('Central de atendimento ao Cliente', function () {
 
   })
 
-  it('marca cada tipo de atendimento', ()=>{
+  it('marca cada tipo de atendimento', () => {
     cy.get('input[type="radio"]')
       .should('have.length', 3)
-      .each(($radio)=>{
+      .each(($radio) => {
         cy.wrap($radio).check()
         cy.wrap($radio).should('be.checked')
 
@@ -157,9 +157,9 @@ describe('Central de atendimento ao Cliente', function () {
       .should('not.have.value')
       .selectFile('cypress/fixtures/dia.jpg')
       .should(function ($input) {
-          console.log($input)
-          expect($input[0].files[0].name).to.equal('dia.jpg')
-       
+        console.log($input)
+        expect($input[0].files[0].name).to.equal('dia.jpg')
+
 
       })
   })
@@ -167,14 +167,14 @@ describe('Central de atendimento ao Cliente', function () {
   it('seleciona um arquivo simulando drag-and-drop', function () {
     cy.get('#file-upload')
       .should('not.have.value')
-      .selectFile('cypress/fixtures/dia.jpg', {action: 'drag-drop'}) //passa um objeto com valor drag-drop
+      .selectFile('cypress/fixtures/dia.jpg', { action: 'drag-drop' }) //passa um objeto com valor drag-drop
       .should(function ($input) {
         expect($input[0].files[0].name).to.equal('dia.jpg')
 
       })
   })
 
-  it('seleciona um arquivo utilizando uma fixture para a qual foi dada um alias', function(){
+  it('seleciona um arquivo utilizando uma fixture para a qual foi dada um alias', function () {
     cy.fixture('dia.jpg').as('aquivoExemplo')
     cy.get('#file-upload')
       .selectFile('@aquivoExemplo')
@@ -182,22 +182,85 @@ describe('Central de atendimento ao Cliente', function () {
         expect($input[0].files[0].name).to.equal('dia.jpg')
 
       })
-      
+
   })
 
-  it('verifica que a política de privacidade abre em outra aba sem necessidade de um clique', function(){
-      cy.get('a[href="privacy.html"]').should('have.attr', 'target', '_blank')
+  it('verifica que a política de privacidade abre em outra aba sem necessidade de um clique', function () {
+    cy.get('a[href="privacy.html"]').should('have.attr', 'target', '_blank')
   })
 
-  it('verifica que a politica de privacidade e abre em uma outra aba sem a necessidade de clicar', function(){
+  it('verifica que a politica de privacidade e abre em uma outra aba sem a necessidade de clicar', function () {
     cy.get('a[href="privacy.html"]')
       .invoke('removeAttr', 'target')
       .click()
 
-      cy.contains('Talking About Testing').should('be.visible')
+    cy.contains('Talking About Testing').should('be.visible')
   })
 
-  
-  
+  it('Fazendo o uso das funcionalidades clock e tick', () => {
+
+    cy.clock()
+
+    cy.get('#firstName').type('Jack')
+    cy.get('#lastName').type('Gonca')
+    cy.get('#email').type('Jack@gmail.com')
+    cy.get('#open-text-area').type('test')
+
+    cy.get('button[type="submit"]').click()
+    cy.get('.success').should('be.visible')
+
+    cy.tick(3000)
+    cy.get('.success').should('not.be.visible')
+
+  })
+
+  Cypress._.times(3, () => { // funcionalidade para fazer o teste rodar X vezes
+
+    it('marca o tipo de atendimento feedback', function () {
+      cy.get('input[type="radio"][value="feedback"]')
+        .check()
+        .should('have.value', 'feedback')
+
+    })
+
+  })
+
+  it('exibe e esconde as mensagens de sucesso e erro usando o .invoke', ()=>{ //para usar essa funcionalidade é preciso que tenha o display none
+    cy.get('.success')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Mensagem enviada com sucesso.')
+      .invoke('hide')
+      .should('not.be.visible')
+
+      cy.get('.error')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Valide os campos obrigatórios!')
+      .invoke('hide')
+      .should('not.be.visible')
+
+  })
+
+  it.only('preenche a area de texto usando o comando invoke',()=>{
+    const textoLongo = Cypress._.repeat('0123456789', 10)
+
+    cy.get('#open-text-area')
+      .invoke('val', textoLongo)
+      .should('have.value', textoLongo)
+
+  })
+
+  it('encontra o gato escondido', ()=>{
+    cy.get('#cat')
+      .invoke('show')
+      .should('be.visible')
+
+    cy.get('#title')  
+      .invoke('text', 'Mudando texto')
+  })
+
 })
 
