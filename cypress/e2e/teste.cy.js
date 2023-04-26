@@ -1,4 +1,4 @@
-// reference types="Cypress"/>
+
 
 describe('Central de atendimento ao Cliente', function () {
   beforeEach(function () {
@@ -15,10 +15,10 @@ describe('Central de atendimento ao Cliente', function () {
     cy.get('#firstName').type('Jack')
     cy.get('#lastName').type('Gonca')
     cy.get('#email').type('Jack@gmail.com')
-    cy.get('#open-text-area').type(longText, { delay: 0 })
+    cy.get('#open-text-area').type(longText, { delay: 0 }) // passa um objeto com valor 0 
 
     cy.get('button[type="submit"]').click()
-    cy.get('.success').should('be.visible')
+    cy.get('.success').should('be.visible') 
 
   })
 
@@ -120,6 +120,16 @@ describe('Central de atendimento ao Cliente', function () {
 
   })
 
+  it('marca cada tipo de atendimento', ()=>{
+    cy.get('input[type="radio"]')
+      .should('have.length', 3)
+      .each(($radio)=>{
+        cy.wrap($radio).check()
+        cy.wrap($radio).should('be.checked')
+
+      })
+  })
+
   it('marca cada tipo de atendimento', function () {
     cy.get('input[type="radio"]')
       .should('have.length', 3) // length = comprimento, confirma se de fato tem 3 elementos
@@ -147,7 +157,9 @@ describe('Central de atendimento ao Cliente', function () {
       .should('not.have.value')
       .selectFile('cypress/fixtures/dia.jpg')
       .should(function ($input) {
-        expect($input[0].files[0].name).to.equal('dia.jpg')
+          console.log($input)
+          expect($input[0].files[0].name).to.equal('dia.jpg')
+       
 
       })
   })
@@ -155,14 +167,14 @@ describe('Central de atendimento ao Cliente', function () {
   it('seleciona um arquivo simulando drag-and-drop', function () {
     cy.get('#file-upload')
       .should('not.have.value')
-      .selectFile('cypress/fixtures/dia.jpg', {action: 'drag-drop'})
+      .selectFile('cypress/fixtures/dia.jpg', {action: 'drag-drop'}) //passa um objeto com valor drag-drop
       .should(function ($input) {
         expect($input[0].files[0].name).to.equal('dia.jpg')
 
       })
   })
 
-  it('seleciona um arquivo utilizando uma fixture para a qual fi dada um alias', function(){
+  it('seleciona um arquivo utilizando uma fixture para a qual foi dada um alias', function(){
     cy.fixture('dia.jpg').as('aquivoExemplo')
     cy.get('#file-upload')
       .selectFile('@aquivoExemplo')
@@ -184,6 +196,8 @@ describe('Central de atendimento ao Cliente', function () {
 
       cy.contains('Talking About Testing').should('be.visible')
   })
+
+  
   
 })
 
